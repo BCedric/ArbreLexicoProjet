@@ -13,6 +13,7 @@ import javax.swing.JTextPane;
 import javax.swing.JEditorPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextArea;
+import javax.swing.JMenuItem;
 
 public class MonAppli {
 
@@ -54,6 +55,15 @@ public class MonAppli {
 		
 		JMenu mnFichier = new JMenu("Fichier");
 		menuBar.add(mnFichier);
+		
+		JMenuItem mntmSauvegarder = new JMenuItem("Sauvegarder");
+		mnFichier.add(mntmSauvegarder);
+		
+		JMenuItem mntmCharger = new JMenuItem("Charger");
+		mnFichier.add(mntmCharger);
+		
+		JMenuItem mntmQuitter = new JMenuItem("Quitter");
+		mnFichier.add(mntmQuitter);
 		
 		JTree tree = new JTree();
 		frame.getContentPane().add(tree, BorderLayout.CENTER);
