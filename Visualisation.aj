@@ -15,6 +15,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 public aspect Visualisation {
 	declare parents : ArbreLexicographique implements TreeModel;
 	private DefaultTreeModel  ArbreLexicographique.model;
+	declare parents : NoeudAbstrait implements TreeNode;
+	private DefaultMutableTreeNode NoeudAbstrait.treeNode;
 	//------------------- IMPLEMENTATION ArbreLexicographique.TreeModel -----------------
 	
 	public void ArbreLexicographique.addTreeModelListener(TreeModelListener l) {
@@ -47,6 +49,66 @@ public aspect Visualisation {
 
 	public void ArbreLexicographique.valueForPathChanged(TreePath path, Object newValue) {
 		this.model.valueForPathChanged(path, newValue);
+	}
+	
+	//---------------------------------------------------------------------------------------
+	
+	//------------------- IMPLEMENTATION NoeudAbstrait.TreeNode -----------------
+	
+	public Enumeration NoeudAbstrait.children() {
+		return this.treeNode.children();
+	}
+
+	public boolean NoeudAbstrait.getAllowsChildren() {
+		return this.treeNode.getAllowsChildren();
+	}
+
+	public TreeNode NoeudAbstrait.getChildAt(int arg0) {
+		return this.treeNode.getChildAt(arg0);
+	}
+
+	public int NoeudAbstrait.getChildCount() {
+		return this.treeNode.getChildCount();
+	}
+
+	public int NoeudAbstrait.getIndex(TreeNode arg0) {
+		return this.treeNode.getIndex(arg0);
+	}
+
+	public TreeNode NoeudAbstrait.getParent() {
+		return this.treeNode.getParent();
+	}
+
+	public boolean NoeudAbstrait.isLeaf() {
+		return this.treeNode.isLeaf();
+	}
+
+	public void NoeudAbstrait.insert(MutableTreeNode arg0, int arg1) {
+		this.treeNode.insert(arg0, arg1);
+	}
+
+	public void NoeudAbstrait.remove(int arg0) {
+		this.treeNode.remove(arg0);
+		
+	}
+
+	public void NoeudAbstrait.remove(MutableTreeNode arg0) {
+		this.treeNode.remove(arg0);
+		
+	}
+
+	public void NoeudAbstrait.removeFromParent() {
+		this.removeFromParent();
+		
+	}
+
+	public void NoeudAbstrait.setParent(MutableTreeNode arg0) {
+		this.treeNode.setParent(arg0);
+		
+	}
+
+	public void NoeudAbstrait.setUserObject(Object arg0) {
+		this.treeNode.setUserObject(arg0);		
 	}
 	
 	//---------------------------------------------------------------------------------------
