@@ -25,6 +25,24 @@ public aspect Visualisation {
 		this.vue = jt;
 	}
 	
+	pointcut deserialiser() : call(void ArbreLexicographique.charge(String) );
+	pointcut ajoutLettre(NoeudAbstrait n, NoeudAbstrait frere, NoeudAbstrait fils, char val) : target(n) && args(frere, fils, val) && execution(NoeudAbstrait.new(NoeudAbstrait, NoeudAbstrait, char));
+	
+	after(NoeudAbstrait n, NoeudAbstrait frere, NoeudAbstrait fils, char val) : ajoutLettre(n, frere,  fils,  val){
+		System.out.println(val);
+		n.treeNode = new DefaultMutableTreeNode();
+		if(fils.treeNode != null) n.treeNode.add(fils.treeNode);
+	}
+	
+	
+	
+	
+	after() : deserialiser(){
+		
+		System.out.println("chargement");
+	}
+	
+	
 	
 	//------------------- IMPLEMENTATION ArbreLexicographique.TreeModel -----------------
 	

@@ -48,13 +48,13 @@ public class ArbreLexicographique {
 	public static void main(String[] args) {
 		ArbreLexicographique a = new ArbreLexicographique();
 		try {
-			a.charge("coucou");
+			//a.charge("coucou");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println(0);
-//		System.out.println(a.ajout("QUOI"));
+//		System.out.println(0);
+		System.out.println(a.ajout("QUOI"));
 //		System.out.println(a.ajout("QUI"));
 //		System.out.println(a.ajout("QUE"));
 //		System.out.println(a.ajout("QUEBEC"));
