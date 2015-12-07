@@ -13,10 +13,19 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 public aspect Visualisation {
+	
 	declare parents : ArbreLexicographique implements TreeModel;
 	private DefaultTreeModel  ArbreLexicographique.model;
+	private JTree ArbreLexicographique.vue;
+	
 	declare parents : NoeudAbstrait implements TreeNode;
 	private DefaultMutableTreeNode NoeudAbstrait.treeNode;
+	
+	public void ArbreLexicographique.setVue(JTree jt){
+		this.vue = jt;
+	}
+	
+	
 	//------------------- IMPLEMENTATION ArbreLexicographique.TreeModel -----------------
 	
 	public void ArbreLexicographique.addTreeModelListener(TreeModelListener l) {
