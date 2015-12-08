@@ -27,23 +27,23 @@ public aspect Visualisation {
 	
 	pointcut deserialiser() : call(void ArbreLexicographique.charge(String) );
 	
+	// initialisation de la racine
 	pointcut initArbreLexico(ArbreLexicographique a) : target(a) && execution(ArbreLexicographique.new());
 	after(ArbreLexicographique a) : initArbreLexico(a){
 		a.model = new DefaultTreeModel(a.entree.treeNode);
 	}
 	
-	
-	pointcut ajoutArbreLexico(ArbreLexicographique a) : 
+	//Modification de la racine lors de l'ajout et de la suppression
+	pointcut modifArbreLexico(ArbreLexicographique a) : 
 		target(a) && (
 				execution(boolean ArbreLexicographique.ajout(String)) || 
 				execution(boolean ArbreLexicographique.suppr(String))
 				);
-	after(ArbreLexicographique a) : ajoutArbreLexico(a){
+	after(ArbreLexicographique a) : modifArbreLexico(a){
 		a.model.setRoot(a.entree.treeNode);
 	}
 	
-	
-	
+	//initialisation d'un noeud abstrait
 	pointcut initNoeudAbstrait(NoeudAbstrait n) : target(n) && execution(NoeudAbstrait.new(NoeudAbstrait));
 	before(NoeudAbstrait n) : initNoeudAbstrait(n){
 		n.treeNode = new DefaultMutableTreeNode();
@@ -51,16 +51,26 @@ public aspect Visualisation {
 	
 	
 	
-	pointcut ajoutLettre(NoeudAbstrait n, NoeudAbstrait frere, NoeudAbstrait fils, char val) : target(n) && args(frere, fils, val) && execution(Noeud.new(NoeudAbstrait, NoeudAbstrait, char));
-	after(NoeudAbstrait n, NoeudAbstrait frere, NoeudAbstrait fils, char val) : ajoutLettre(n, frere,  fils,  val){
-		System.out.println(val);
-		n.treeNode = new DefaultMutableTreeNode();
-		n.treeNode.add(fils.treeNode);
+	pointcut ajoutLettre(Noeud n, NoeudAbstrait frere, NoeudAbstrait fils, char val) : target(n) && args(frere, fils, val) && execution(Noeud.new(NoeudAbstrait, NoeudAbstrait, char));
+	after(Noeud n, NoeudAbstrait frere, NoeudAbstrait fils, char val) : ajoutLettre(n, frere,  fils,  val){
+		n.treeNode = new DefaultMutableTreeNode(val);
+		n.treeNode.add(fils.treeNode);		
 	}
 	
-	pointcut ajoutsurNoeud(Noeud n) : target(n) && (call(NoeudAbstrait Noeud.ajout(String)));
 	
-	before(Noeud n) : ajoutsurNoeud(n){
+	
+	after(Noeud n, String s) returning(NoeudAbstrait n1): target(n) && args(s) && execution(NoeudAbstrait Noeud.ajout(String)){
+		System.out.println();
+	}
+	
+	pointcut modifFils(Noeud n, NoeudAbstrait n1) : this(n) && target(n1) && set(NoeudAbstrait Noeud.fils);
+	
+	after(Noeud n, NoeudAbstrait n1) : modifFils(n, n1){
+		System.out.println();
+	}
+	
+	pointcut ajoutsurMarque(Marque m, String s) : target(m) && args(s) && execution(NoeudAbstrait Marque.ajout(String));
+	after(Marque m, String s) : ajoutsurMarque(m, s){
 		
 	}
 	
@@ -68,11 +78,18 @@ public aspect Visualisation {
 	
 	
 	after() : deserialiser(){
-		
 		System.out.println("chargement");
 	}
 	
-	
+	private boolean contient(TreeNode treeNode, Noeud n){
+		Enumeration e = treeNode.children();
+		MutableTreeNode m;
+		while(e.hasMoreElements()){
+			m = (MutableTreeNode) e.nextElement();
+			if(m.equals(n)) return true;
+		}
+		return false;
+	}
 	
 	//------------------- IMPLEMENTATION ArbreLexicographique.TreeModel -----------------
 	

@@ -27,7 +27,7 @@ public aspect Serialisation {
 	public void ArbreLexicographique.charge(String nomFichier) throws IOException, ClassNotFoundException{
 		FileInputStream fichier = new FileInputStream(nomFichier); 
 	    ObjectInputStream o =new ObjectInputStream(fichier); 
-	    this.entree = (Noeud)o.readObject();
+	    this.entree = (NoeudAbstrait)o.readObject();
 	    o.close();
 	}
 
