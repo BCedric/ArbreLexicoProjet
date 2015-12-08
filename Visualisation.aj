@@ -26,12 +26,35 @@ public aspect Visualisation {
 	}
 	
 	pointcut deserialiser() : call(void ArbreLexicographique.charge(String) );
-	pointcut ajoutLettre(NoeudAbstrait n, NoeudAbstrait frere, NoeudAbstrait fils, char val) : target(n) && args(frere, fils, val) && execution(NoeudAbstrait.new(NoeudAbstrait, NoeudAbstrait, char));
 	
+	pointcut initArbreLexico(ArbreLexicographique a) : target(a) && execution(ArbreLexicographique.new());
+	after(ArbreLexicographique a) : initArbreLexico(a){
+		a.model = new DefaultTreeModel(a.entree.treeNode);
+	}
+	
+	pointcut ajoutArbreLexico(ArbreLexicographique a) : target(a) && execution(boolean ArbreLexicographique.ajout(String));
+	after(ArbreLexicographique a) : ajoutArbreLexico(a){
+		
+	}
+	
+	pointcut initNoeudAbstrait(NoeudAbstrait n) : target(n) && execution(NoeudAbstrait.new(NoeudAbstrait));
+	before(NoeudAbstrait n) : initNoeudAbstrait(n){
+		n.treeNode = new DefaultMutableTreeNode();
+	}
+	
+	
+	
+	pointcut ajoutLettre(NoeudAbstrait n, NoeudAbstrait frere, NoeudAbstrait fils, char val) : target(n) && args(frere, fils, val) && execution(Noeud.new(NoeudAbstrait, NoeudAbstrait, char));
 	after(NoeudAbstrait n, NoeudAbstrait frere, NoeudAbstrait fils, char val) : ajoutLettre(n, frere,  fils,  val){
 		System.out.println(val);
 		n.treeNode = new DefaultMutableTreeNode();
-		if(fils.treeNode != null) n.treeNode.add(fils.treeNode);
+		n.treeNode.add(fils.treeNode);
+	}
+	
+	pointcut ajoutsurNoeud(Noeud n) : target(n) && (call(NoeudAbstrait Noeud.ajout(String)));
+	
+	before(Noeud n) : ajoutsurNoeud(n){
+		
 	}
 	
 	
