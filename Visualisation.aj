@@ -32,10 +32,17 @@ public aspect Visualisation {
 		a.model = new DefaultTreeModel(a.entree.treeNode);
 	}
 	
-	pointcut ajoutArbreLexico(ArbreLexicographique a) : target(a) && execution(boolean ArbreLexicographique.ajout(String));
+	
+	pointcut ajoutArbreLexico(ArbreLexicographique a) : 
+		target(a) && (
+				execution(boolean ArbreLexicographique.ajout(String)) || 
+				execution(boolean ArbreLexicographique.suppr(String))
+				);
 	after(ArbreLexicographique a) : ajoutArbreLexico(a){
-		
+		a.model.setRoot(a.entree.treeNode);
 	}
+	
+	
 	
 	pointcut initNoeudAbstrait(NoeudAbstrait n) : target(n) && execution(NoeudAbstrait.new(NoeudAbstrait));
 	before(NoeudAbstrait n) : initNoeudAbstrait(n){

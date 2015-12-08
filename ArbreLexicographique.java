@@ -61,6 +61,7 @@ public class ArbreLexicographique {
 //		System.out.println(a.ajout("QUOI"));
 		System.out.print(a);		
 		System.out.println(a.nbMots());
+		a.suppr("QUOI");
 		a.sauve("coucou");
 
 	}
