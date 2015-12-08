@@ -14,10 +14,15 @@ import javax.swing.JEditorPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextArea;
 import javax.swing.JMenuItem;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class MonAppli {
 
 	private JFrame frame;
+	private ArbreLexicographique arbre;
 
 	/**
 	 * Launch the application.
@@ -26,7 +31,7 @@ public class MonAppli {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					MonAppli window = new MonAppli();
+					MonAppli window = new MonAppli(new ArbreLexicographique());
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -38,14 +43,20 @@ public class MonAppli {
 	/**
 	 * Create the application.
 	 */
-	public MonAppli() {
-		initialize();
+	public MonAppli(ArbreLexicographique arbre) {
+		
+		initialize(arbre);
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	private void initialize(ArbreLexicographique arbre) {
+		//------------------------------------
+				this.arbre = arbre;
+				
+		//------------------------------------
+		
 		frame = new JFrame();
 		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -57,12 +68,39 @@ public class MonAppli {
 		menuBar.add(mnFichier);
 		
 		JMenuItem mntmSauvegarder = new JMenuItem("Sauvegarder");
+		mntmSauvegarder.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//-----------------------------------
+				System.out.println("sauvegarde");
+				arbre.sauve("coucou");
+				//-----------------------------------
+			}
+		});
 		mnFichier.add(mntmSauvegarder);
 		
 		JMenuItem mntmCharger = new JMenuItem("Charger");
+		mntmCharger.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//-----------------------------------
+				try {
+					arbre.charge("coucou");
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				//-----------------------------------
+			}
+		});
+		
 		mnFichier.add(mntmCharger);
 		
 		JMenuItem mntmQuitter = new JMenuItem("Quitter");
+		mntmQuitter.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
+		
 		mnFichier.add(mntmQuitter);
 		
 		JTree tree = new JTree();
@@ -71,18 +109,47 @@ public class MonAppli {
 		JPanel panel = new JPanel();
 		frame.getContentPane().add(panel, BorderLayout.NORTH);
 		
+		JEditorPane texte = new JEditorPane();
+		panel.add(texte);
+		
+		JTextArea resultat = new JTextArea();
+		frame.getContentPane().add(resultat, BorderLayout.SOUTH);
+		
 		JButton btnAjouter = new JButton("Ajouter");
+		btnAjouter.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				//-------------------------------------------
+				if(arbre.ajout(texte.getText()))
+					resultat.setText("Le mot "+texte.getText()+" a bien été ajouté");
+				else resultat.setText("Le mot "+texte.getText()+" n'a pas été ajouté");
+				
+				//-------------------------------------------
+				
+			}
+		});
 		panel.add(btnAjouter);
 		
 		JButton btnSupprimer = new JButton("Supprimer");
+		btnSupprimer.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				//-------------------------------------------
+				if(arbre.suppr(texte.getText()))
+					resultat.setText("Le mot "+texte.getText()+" a bien été supprimé");
+				else resultat.setText("Le mot "+texte.getText()+" n'a pas été supprimé");
+				
+				//-------------------------------------------
+			}
+		});
+		//------------------------------------
+		this.arbre = arbre;
+		arbre.setVue(tree);
+		tree.setModel(arbre);
+		//------------------------------------
 		panel.add(btnSupprimer);
 		
-		JEditorPane dtrpnSqldnln = new JEditorPane();
-		panel.add(dtrpnSqldnln);
 		
-		JTextArea txtrSdqjhsjqhdslqhdlqhdlskqhdklh = new JTextArea();
-		txtrSdqjhsjqhdslqhdlqhdlskqhdklh.setText("sdqjhsjqhdslqhdlqhdlskqhdklh");
-		frame.getContentPane().add(txtrSdqjhsjqhdslqhdlqhdlskqhdklh, BorderLayout.SOUTH);
 	}
 
 }
