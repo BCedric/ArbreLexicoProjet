@@ -12,7 +12,7 @@ import java.util.Enumeration;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
-public aspect Visualisation {
+public privileged aspect Visualisation {
 	
 	declare parents : ArbreLexicographique implements TreeModel;
 	private DefaultTreeModel  ArbreLexicographique.model;
