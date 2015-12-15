@@ -66,7 +66,7 @@ public privileged aspect Visualisation {
 	pointcut modifFils(Noeud n, NoeudAbstrait n1) : this(n) && target(n1) && set(NoeudAbstrait Noeud.fils);
 	
 	after(Noeud n, NoeudAbstrait n1) : modifFils(n, n1){
-		System.out.println();
+		n.treeNode.add(n.fils.treeNode);
 	}
 	
 	pointcut ajoutsurMarque(Marque m, String s) : target(m) && args(s) && execution(NoeudAbstrait Marque.ajout(String));
