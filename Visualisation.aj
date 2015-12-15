@@ -58,20 +58,21 @@ public privileged aspect Visualisation {
 	}
 	
 	
-	
-	after(Noeud n, String s) returning(NoeudAbstrait n1): target(n) && args(s) && execution(NoeudAbstrait Noeud.ajout(String)){
-		System.out.println();
+	pointcut modifFrere(Noeud n, NoeudAbstrait n1) : this(n) && target(n1) && set(NoeudAbstrait Noeud.frere);
+	after(Noeud n, NoeudAbstrait n1) : modifFrere(n, n1){
+		System.out.println("modifFrere");
+		((MutableTreeNode) n.treeNode.getParent()).insert(n.frere.treeNode,0);
 	}
 	
 	pointcut modifFils(Noeud n, NoeudAbstrait n1) : this(n) && target(n1) && set(NoeudAbstrait Noeud.fils);
-	
 	after(Noeud n, NoeudAbstrait n1) : modifFils(n, n1){
 		n.treeNode.add(n.fils.treeNode);
 	}
 	
 	pointcut ajoutsurMarque(Marque m, String s) : target(m) && args(s) && execution(NoeudAbstrait Marque.ajout(String));
 	after(Marque m, String s) : ajoutsurMarque(m, s){
-		
+		((MutableTreeNode) m.treeNode.getParent()).insert(m.frere.treeNode,0);
+		System.out.println("ajout marque");
 	}
 	
 	
