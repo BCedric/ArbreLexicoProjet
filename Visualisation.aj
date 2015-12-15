@@ -53,7 +53,7 @@ public privileged aspect Visualisation {
 	
 	pointcut ajoutLettre(Noeud n, NoeudAbstrait frere, NoeudAbstrait fils, char val) : target(n) && args(frere, fils, val) && execution(Noeud.new(NoeudAbstrait, NoeudAbstrait, char));
 	after(Noeud n, NoeudAbstrait frere, NoeudAbstrait fils, char val) : ajoutLettre(n, frere,  fils,  val){
-		n.treeNode = new DefaultMutableTreeNode(val);
+		n.treeNode = new DefaultMutableTreeNode(Character.toString(val));
 		n.treeNode.add(fils.treeNode);		
 	}
 	
