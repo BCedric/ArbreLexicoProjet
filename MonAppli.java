@@ -20,6 +20,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JScrollPane;
 
 public class MonAppli {
 
@@ -52,7 +53,8 @@ public class MonAppli {
 		arbre = new ArbreLexicographique();
 		initialize();
 		arbre.setVue(tree);
-		tree.setModel((TreeModel) arbre);
+		tree.setModel(arbre);
+		
 	}
 
 	/**
@@ -68,6 +70,12 @@ public class MonAppli {
 		
 		JMenu mnFichier = new JMenu("Fichier");
 		menuBar.add(mnFichier);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
+		
+		tree = new JTree();
+		scrollPane.setViewportView(tree);
 		
 		JMenuItem mntmSauvegarder = new JMenuItem("Sauvegarder");
 		mntmSauvegarder.addActionListener(new ActionListener() {
@@ -105,9 +113,6 @@ public class MonAppli {
 		});
 		
 		mnFichier.add(mntmQuitter);
-		
-		tree = new JTree();
-		frame.getContentPane().add(tree, BorderLayout.CENTER);
 		
 		JPanel panel = new JPanel();
 		frame.getContentPane().add(panel, BorderLayout.NORTH);
