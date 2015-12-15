@@ -6,6 +6,8 @@ import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JTree;
+import javax.swing.tree.TreeModel;
+
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import javax.swing.JButton;
@@ -23,6 +25,9 @@ public class MonAppli {
 
 	private JFrame frame;
 	private ArbreLexicographique arbre;
+	private JTextArea resultat;
+	private JTree tree;
+	private JEditorPane texte;
 
 	/**
 	 * Launch the application.
@@ -31,7 +36,7 @@ public class MonAppli {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					MonAppli window = new MonAppli(new ArbreLexicographique());
+					MonAppli window = new MonAppli();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -43,20 +48,17 @@ public class MonAppli {
 	/**
 	 * Create the application.
 	 */
-	public MonAppli(ArbreLexicographique arbre) {
-		
-		initialize(arbre);
+	public MonAppli() {
+		arbre = new ArbreLexicographique();
+		initialize();
+		arbre.setVue(tree);
+		tree.setModel((TreeModel) arbre);
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize(ArbreLexicographique arbre) {
-		//------------------------------------
-				this.arbre = arbre;
-				
-		//------------------------------------
-		
+	private void initialize() {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -82,6 +84,7 @@ public class MonAppli {
 		mntmCharger.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//-----------------------------------
+				
 				try {
 					arbre.charge("coucou");
 				} catch (Exception e1) {
@@ -103,16 +106,16 @@ public class MonAppli {
 		
 		mnFichier.add(mntmQuitter);
 		
-		JTree tree = new JTree();
+		tree = new JTree();
 		frame.getContentPane().add(tree, BorderLayout.CENTER);
 		
 		JPanel panel = new JPanel();
 		frame.getContentPane().add(panel, BorderLayout.NORTH);
 		
-		JEditorPane texte = new JEditorPane();
+		texte = new JEditorPane();
 		panel.add(texte);
 		
-		JTextArea resultat = new JTextArea();
+		resultat = new JTextArea();
 		frame.getContentPane().add(resultat, BorderLayout.SOUTH);
 		
 		JButton btnAjouter = new JButton("Ajouter");
@@ -142,11 +145,7 @@ public class MonAppli {
 				//-------------------------------------------
 			}
 		});
-		//------------------------------------
-		this.arbre = arbre;
-		arbre.setVue(tree);
-		tree.setModel(arbre);
-		//------------------------------------
+		
 		panel.add(btnSupprimer);
 		
 		
