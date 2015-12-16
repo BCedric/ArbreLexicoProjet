@@ -57,22 +57,27 @@ public privileged aspect Visualisation {
 		n.treeNode.add(fils.treeNode);		
 	}
 	
+	//modification d'un frere
+	pointcut modifFrere(NoeudAbstrait n) : target(n) && set(NoeudAbstrait NoeudAbstrait.frere);
 	
-	pointcut modifFrere(Noeud n, NoeudAbstrait n1) : this(n) && target(n1) && set(NoeudAbstrait Noeud.frere);
-	after(Noeud n, NoeudAbstrait n1) : modifFrere(n, n1){
-		System.out.println("modifFrere");
-		((MutableTreeNode) n.treeNode.getParent()).insert(n.frere.treeNode,0);
+	//modification d'un fils
+	pointcut modifFils(Noeud n, NoeudAbstrait n1) : this(n) && target(n1) && set(NoeudAbstrait Noeud.fils);
+	
+	//modification d'un frere dans la méthode ajout
+	pointcut modifFrereAjout(NoeudAbstrait n) : target(n) && modifFrere(NoeudAbstrait) && withincode(NoeudAbstrait NoeudAbstrait+.ajout(String));
+	after(NoeudAbstrait n) : modifFrereAjout(n){
+		if(n.getParent() != null) ((MutableTreeNode) n.treeNode.getParent()).insert(n.frere.treeNode,0);
 	}
 	
-	pointcut modifFils(Noeud n, NoeudAbstrait n1) : this(n) && target(n1) && set(NoeudAbstrait Noeud.fils);
-	after(Noeud n, NoeudAbstrait n1) : modifFils(n, n1){
+	//modification d'un fils dans la méthode ajout
+	pointcut modifFilsAjout(Noeud n) : target(n) &&  modifFils(Noeud, NoeudAbstrait) && withincode(NoeudAbstrait NoeudAbstrait+.ajout(String));
+	after(Noeud n) : modifFilsAjout(n){
 		n.treeNode.add(n.fils.treeNode);
 	}
 	
 	pointcut ajoutsurMarque(Marque m, String s) : target(m) && args(s) && execution(NoeudAbstrait Marque.ajout(String));
 	after(Marque m, String s) : ajoutsurMarque(m, s){
 		((MutableTreeNode) m.treeNode.getParent()).insert(m.frere.treeNode,0);
-		System.out.println("ajout marque");
 	}
 	
 	
