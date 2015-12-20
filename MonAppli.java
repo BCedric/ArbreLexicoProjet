@@ -19,6 +19,8 @@ import javax.swing.JTextArea;
 import javax.swing.JMenuItem;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
@@ -53,7 +55,9 @@ public class MonAppli {
 	 */
 	public MonAppli() {
 		arbre = new ArbreLexicographique();
-		chooser = new JFileChooser();
+		try{
+			chooser = new JFileChooser(new File(".").getCanonicalFile());
+		} catch(IOException e) {}
 		initialize();
 		arbre.setVue(tree);
 		tree.setModel(arbre);
@@ -84,9 +88,13 @@ public class MonAppli {
 		mntmSauvegarder.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//-----------------------------------
+				
 				chooser.showOpenDialog(null);
-				arbre.sauve(chooser.getSelectedFile().toString());
-				System.out.println("sauvegarde");
+				if(chooser.getSelectedFile()!=null) {
+					arbre.sauve(chooser.getSelectedFile().toString());
+					System.out.println("sauvegarde");
+				}
+				
 				//-----------------------------------
 			}
 		});
