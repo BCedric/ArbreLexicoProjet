@@ -30,18 +30,33 @@ public privileged aspect Visualisation {
 	// initialisation de la racine
 	pointcut initArbreLexico(ArbreLexicographique a) : target(a) && execution(ArbreLexicographique.new());
 	after(ArbreLexicographique a) : initArbreLexico(a){
-		a.model = new DefaultTreeModel(a.entree.treeNode);
+		a.model = new DefaultTreeModel(new DefaultMutableTreeNode());
 	}
 	
-	//Modification de la racine lors de l'ajout et de la suppression
-	pointcut modifArbreLexico(ArbreLexicographique a) : 
-		target(a) && (
-				execution(boolean ArbreLexicographique.ajout(String)) || 
-				execution(boolean ArbreLexicographique.suppr(String))
-				);
-	after(ArbreLexicographique a) : modifArbreLexico(a){
-		a.model.setRoot(a.entree.treeNode);
+	//modification de la racine
+	pointcut modifRacine(ArbreLexicographique n) : this(n) && set(NoeudAbstrait ArbreLexicographique.entree);
+	
+	
+	
+	// modifictaion de la racine lors de l'ajout
+	pointcut modifRacineAjout(ArbreLexicographique n) : target(n) && modifRacine(ArbreLexicographique) && withincode(boolean ArbreLexicographique.ajout(String));
+	after(ArbreLexicographique n) : modifRacineAjout(n){
+		((DefaultMutableTreeNode) n.model.getRoot()).insert(n.entree.treeNode, 0);
+		((DefaultTreeModel)n.model).reload();
 	}
+	
+	// modifictaion de la racine lors de la suppression
+	pointcut modifRacineSuppr(ArbreLexicographique n) : target(n) && modifRacine(ArbreLexicographique) && withincode(boolean ArbreLexicographique.suppr(String));
+	before(ArbreLexicographique n) : modifRacineSuppr(n){
+		((DefaultMutableTreeNode)n.getRoot()).remove(n.entree.treeNode);
+	}
+	after(ArbreLexicographique n) : modifRacineSuppr(n){
+		if(n.entree != NoeudVide.getInstance()){
+			((DefaultMutableTreeNode) n.model.getRoot()).insert(n.entree.treeNode, 0);
+		}
+		((DefaultTreeModel)n.model).reload();
+	}
+	
 	
 	//initialisation d'un noeud abstrait
 	pointcut initNoeudAbstrait(NoeudAbstrait n) : target(n) && execution(NoeudAbstrait.new(NoeudAbstrait));
