@@ -90,9 +90,37 @@ public privileged aspect Visualisation {
 		n.treeNode.add(n.fils.treeNode);
 	}
 	
+	//modification d'un fils dans la m�thode suppr
+	pointcut modifFilsSuppr(Noeud n) : target(n) &&  modifFils(Noeud, NoeudAbstrait) && withincode(NoeudAbstrait NoeudAbstrait+.suppr(String));
+	before(Noeud n) : modifFilsSuppr(n){
+		if(n.fils.treeNode.getParent() != null) n.treeNode.remove(n.fils.treeNode);
+	}
+	after(Noeud n) : modifFilsSuppr(n){
+		if(n.fils != NoeudVide.getInstance()) n.treeNode.add(n.fils.treeNode);
+	}
+	
+	//modification d'un frere dans la m�thode ajout
+	pointcut modifFrereSuppr(NoeudAbstrait n) : target(n) && modifFrere(NoeudAbstrait) && withincode(NoeudAbstrait NoeudAbstrait+.suppr(String));
+	before(NoeudAbstrait n) : modifFrereSuppr(n){
+		((MutableTreeNode)n.treeNode.getParent()).remove(n.frere.treeNode);
+	}
+	after(NoeudAbstrait n) : modifFrereSuppr(n){
+		if(n.frere != NoeudVide.getInstance())
+		((MutableTreeNode) n.treeNode.getParent()).insert(n.frere.treeNode, 0);
+	}
+	
 	pointcut ajoutsurMarque(Marque m, String s) : target(m) && args(s) && execution(NoeudAbstrait Marque.ajout(String));
 	after(Marque m, String s) : ajoutsurMarque(m, s){
+		if(m.frere != NoeudVide.getInstance())
 		((MutableTreeNode) m.treeNode.getParent()).insert(m.frere.treeNode,0);
+	}
+	
+	pointcut supprsurMarque(Marque m, String s) : target(m) && args(s) && execution(NoeudAbstrait Marque.suppr(String));
+	after(Marque m, String s) : supprsurMarque(m, s){
+		if(s.isEmpty()){
+			
+			((MutableTreeNode)m.treeNode.getParent()).remove(m.treeNode);
+		}
 	}
 	
 	
