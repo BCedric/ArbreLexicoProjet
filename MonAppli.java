@@ -3,6 +3,7 @@ package ArbreLexicoProjet;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
+import javax.swing.JFileChooser;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JTree;
@@ -29,6 +30,7 @@ public class MonAppli {
 	private JTextArea resultat;
 	private JTree tree;
 	private JEditorPane texte;
+	private JFileChooser chooser;
 
 	/**
 	 * Launch the application.
@@ -51,6 +53,7 @@ public class MonAppli {
 	 */
 	public MonAppli() {
 		arbre = new ArbreLexicographique();
+		chooser = new JFileChooser();
 		initialize();
 		arbre.setVue(tree);
 		tree.setModel(arbre);
@@ -81,8 +84,9 @@ public class MonAppli {
 		mntmSauvegarder.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//-----------------------------------
+				chooser.showOpenDialog(null);
+				arbre.sauve(chooser.getSelectedFile().toString());
 				System.out.println("sauvegarde");
-				arbre.sauve("coucou");
 				//-----------------------------------
 			}
 		});
@@ -92,13 +96,13 @@ public class MonAppli {
 		mntmCharger.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//-----------------------------------
-				
+				chooser.showOpenDialog(null);
 				try {
-					arbre.charge("coucou");
+					arbre.charge(chooser.getSelectedFile().toString());
 				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					
 				}
+				
 				//-----------------------------------
 			}
 		});
