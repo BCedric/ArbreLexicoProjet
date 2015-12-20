@@ -59,12 +59,10 @@ public privileged aspect Visualisation {
 	
 	
 	//initialisation d'un noeud abstrait
-	pointcut initNoeudAbstrait(NoeudAbstrait n) : target(n) && execution(NoeudAbstrait.new(NoeudAbstrait));
+	pointcut initNoeudAbstrait(NoeudAbstrait n) : target(n) && execution(Marque.new(NoeudAbstrait));
 	before(NoeudAbstrait n) : initNoeudAbstrait(n){
 		n.treeNode = new DefaultMutableTreeNode();
 	}
-	
-	
 	
 	pointcut ajoutLettre(Noeud n, NoeudAbstrait frere, NoeudAbstrait fils, char val) : target(n) && args(frere, fils, val) && execution(Noeud.new(NoeudAbstrait, NoeudAbstrait, char));
 	after(Noeud n, NoeudAbstrait frere, NoeudAbstrait fils, char val) : ajoutLettre(n, frere,  fils,  val){
@@ -90,7 +88,7 @@ public privileged aspect Visualisation {
 		n.treeNode.add(n.fils.treeNode);
 	}
 	
-	//modification d'un fils dans la mï¿½thode suppr
+	//modification d'un fils dans la méthode suppr
 	pointcut modifFilsSuppr(Noeud n) : target(n) &&  modifFils(Noeud, NoeudAbstrait) && withincode(NoeudAbstrait NoeudAbstrait+.suppr(String));
 	before(Noeud n) : modifFilsSuppr(n){
 		if(n.fils.treeNode.getParent() != null) n.treeNode.remove(n.fils.treeNode);
@@ -99,7 +97,7 @@ public privileged aspect Visualisation {
 		if(n.fils != NoeudVide.getInstance()) n.treeNode.add(n.fils.treeNode);
 	}
 	
-	//modification d'un frere dans la mï¿½thode ajout
+	//modification d'un frere dans la méthode ajout
 	pointcut modifFrereSuppr(NoeudAbstrait n) : target(n) && modifFrere(NoeudAbstrait) && withincode(NoeudAbstrait NoeudAbstrait+.suppr(String));
 	before(NoeudAbstrait n) : modifFrereSuppr(n){
 		((MutableTreeNode)n.treeNode.getParent()).remove(n.frere.treeNode);
