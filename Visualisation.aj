@@ -58,14 +58,15 @@ public privileged aspect Visualisation {
 	}
 	
 	
-	//initialisation d'un noeud abstrait
-	pointcut initNoeudAbstrait(NoeudAbstrait n) : target(n) && execution(Marque.new(NoeudAbstrait));
-	before(NoeudAbstrait n) : initNoeudAbstrait(n){
+	//initialisation d'une marque
+	pointcut initMarque(NoeudAbstrait n) : target(n) && execution(Marque.new(NoeudAbstrait));
+	before(NoeudAbstrait n) : initMarque(n){
 		n.treeNode = new DefaultMutableTreeNode();
 	}
-	
-	pointcut ajoutLettre(Noeud n, NoeudAbstrait frere, NoeudAbstrait fils, char val) : target(n) && args(frere, fils, val) && execution(Noeud.new(NoeudAbstrait, NoeudAbstrait, char));
-	after(Noeud n, NoeudAbstrait frere, NoeudAbstrait fils, char val) : ajoutLettre(n, frere,  fils,  val){
+
+	//initialisation d'un noeud
+	pointcut initNoeud(Noeud n, NoeudAbstrait frere, NoeudAbstrait fils, char val) : target(n) && args(frere, fils, val) && execution(Noeud.new(NoeudAbstrait, NoeudAbstrait, char));
+	after(Noeud n, NoeudAbstrait frere, NoeudAbstrait fils, char val) : initNoeud(n, frere,  fils,  val){
 		n.treeNode = new DefaultMutableTreeNode(Character.toString(val));
 		n.treeNode.add(fils.treeNode);		
 	}
@@ -107,36 +108,7 @@ public privileged aspect Visualisation {
 		((MutableTreeNode) n.treeNode.getParent()).insert(n.frere.treeNode, 0);
 	}
 	
-	pointcut ajoutsurMarque(Marque m, String s) : target(m) && args(s) && execution(NoeudAbstrait Marque.ajout(String));
-	after(Marque m, String s) : ajoutsurMarque(m, s){
-		if(m.frere != NoeudVide.getInstance())
-		((MutableTreeNode) m.treeNode.getParent()).insert(m.frere.treeNode,0);
-	}
 	
-	pointcut supprsurMarque(Marque m, String s) : target(m) && args(s) && execution(NoeudAbstrait Marque.suppr(String));
-	after(Marque m, String s) : supprsurMarque(m, s){
-		if(s.isEmpty()){
-			
-			((MutableTreeNode)m.treeNode.getParent()).remove(m.treeNode);
-		}
-	}
-	
-	
-	
-	
-	after() : deserialiser(){
-		System.out.println("chargement");
-	}
-	
-	private boolean contient(TreeNode treeNode, Noeud n){
-		Enumeration e = treeNode.children();
-		MutableTreeNode m;
-		while(e.hasMoreElements()){
-			m = (MutableTreeNode) e.nextElement();
-			if(m.equals(n)) return true;
-		}
-		return false;
-	}
 	
 	//------------------- IMPLEMENTATION ArbreLexicographique.TreeModel -----------------
 	
