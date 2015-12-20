@@ -8,6 +8,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JTree;
 import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
@@ -21,6 +23,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.Enumeration;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
@@ -110,6 +113,7 @@ public class MonAppli {
 				} catch (Exception e1) {
 					
 				}
+				expandOrCollapsePath(tree, new TreePath(arbre.getRoot()), true);
 				
 				//-----------------------------------
 			}
@@ -143,7 +147,7 @@ public class MonAppli {
 				if(arbre.ajout(texte.getText()))
 					resultat.setText("Le mot "+texte.getText()+" a bien été ajouté");
 				else resultat.setText("Le mot "+texte.getText()+" n'a pas été ajouté");
-				
+				expandOrCollapsePath(tree, new TreePath(arbre.getRoot()), true);
 				//-------------------------------------------
 				
 			}
@@ -158,6 +162,7 @@ public class MonAppli {
 				if(arbre.suppr(texte.getText()))
 					resultat.setText("Le mot "+texte.getText()+" a bien été supprimé");
 				else resultat.setText("Le mot "+texte.getText()+" n'a pas été supprimé");
+				expandOrCollapsePath(tree, new TreePath(arbre.getRoot()), true);
 				
 				//-------------------------------------------
 			}
@@ -167,5 +172,30 @@ public class MonAppli {
 		
 		
 	}
+	
+	  /**
+	   * Permet d'ouvrir ou de fermer tous les chemins de l'arbre à partir d'un noeud
+	   */
+	  @SuppressWarnings("unchecked")
+	  public static void expandOrCollapsePath(JTree tree, TreePath parent, boolean expand)
+	  {
+	    // Traverse children
+	    TreeNode node = (TreeNode) parent.getLastPathComponent();
+	    if (node.getChildCount() >= 0)
+	    {
+	      for(Enumeration<TreeNode> enm = node.children(); enm.hasMoreElements();)
+	      {
+	        TreeNode n = enm.nextElement();
+	        TreePath path = parent.pathByAddingChild(n);
+	        expandOrCollapsePath(tree, path, expand);
+	      }
+	    }
+	 
+	    //
+	    if (expand)
+	      tree.expandPath(parent);
+	    else
+	      tree.collapsePath(parent);
+	  }
 
 }
